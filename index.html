@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>All Cases</h2>
+<ul>
+    {% for case in cases %}
+        <li>
+            <strong>{{ case.case_name }}</strong> (Client: {{ case.client_name }})<br>
+            Details: {{ case.details }}<br>
+            <a href="{{ url_for('delete_case', case_id=case.id) }}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
