@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add New Case</h2>
+<form method="POST">
+    <label for="case_name">Case Name:</label><br>
+    <input type="text" id="case_name" name="case_name" required><br>
+    <label for="client_name">Client Name:</label><br>
+    <input type="text" id="client_name" name="client_name" required><br>
+    <label for="details">Details:</label><br>
+    <textarea id="details" name="details" required></textarea><br>
+    <button type="submit">Add Case</button>
+</form>
+{% endblock %}
