@@ -1,0 +1,50 @@
+from flask import Flask, request, jsonify
+from googletrans import Translator
+from gtts import gTTS
+import speech_recognition as sr
+import os
+
+app = Flask(__name__)
+
+# Initialize Google Translator
+translator = Translator()
+
+@app.route('/translate', methods=['POST'])
+def translate():
+    data = request.get_json()
+    text = data.get('text')
+    target_language = data.get('target_language')
+
+    # Translate text
+    translated = translator.translate(text, dest=target_language)
+    return jsonify({'translated_text': translated.text})
+
+@app.route('/speech-to-text', methods=['POST'])
+def speech_to_text():
+    file = request.files['audio']
+    file.save("audio.wav")
+    
+    # Convert speech to text using SpeechRecognition
+    recognizer = sr.Recognizer()
+    with sr.AudioFile("audio.wav") as source:
+        audio = recognizer.record(source)
+    
+    try:
+        text = recognizer.recognize_google(audio)
+        return jsonify({'text': text})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+@app.route('/text-to-speech', methods=['POST'])
+def text_to_speech():
+    data = request.get_json()
+    text = data.get('text')
+    language = data.get('language', 'en')
+    
+    tts = gTTS(text=text, lang=language)
+    tts.save("output.mp3")
+    
+    return jsonify({'message': 'Audio saved', 'audio_url': 'output.mp3'})
+
+if __name__ == '__main__':
+    app.run(debug=True)
